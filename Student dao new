@@ -1,0 +1,30 @@
+package com.example.studentcrudapp.data.dao
+
+import androidx.room.*
+import com.example.studentcrudapp.data.entity.Student
+import kotlinx.coroutines.flow.Flow
+
+// DAO (Data Access Object) for handling database operations for the 'students' table
+@Dao
+interface StudentDao {
+
+    // Query to fetch all students from the 'students' table
+    // The result is returned as a Flow, which is a coroutine-based asynchronous stream
+    @Query("SELECT * FROM students")
+    fun getAllStudents(): Flow<List<Student>>
+
+    // Method to insert a new student into the 'students' table
+    // The suspend modifier allows this to be called from a coroutine
+    @Insert
+    suspend fun insertStudent(student: Student)
+
+    // Method to update an existing student in the 'students' table
+    // The suspend modifier allows this to be called from a coroutine
+    @Update
+    suspend fun updateStudent(student: Student)
+
+    // Method to delete a student from the 'students' table
+    // The suspend modifier allows this to be called from a coroutine
+    @Delete
+    suspend fun deleteStudent(student: Student)
+}
