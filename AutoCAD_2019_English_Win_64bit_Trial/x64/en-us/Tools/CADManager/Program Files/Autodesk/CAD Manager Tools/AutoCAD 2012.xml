@@ -1,0 +1,16 @@
+<ProductXML>
+	<ProductInfo>
+		<Name>AutoCAD 2012</Name>
+		<Version>18.2.43.0</Version>
+	</ProductInfo>
+	<BaseKey>HKEY_LOCAL_MACHINE\SOFTWARE\Autodesk\AutoCAD\R18.2\ACAD-A001:*</BaseKey>
+	<PagesEX>
+		<Page>Communication Center</Page>
+		<Page>InfoCenter</Page>
+		<Page>Subscription Center</Page>
+	</PagesEX>
+	<PagesInc>
+		<Page>Exchange</Page>
+		<Page>InfoCenterNew</Page>
+	</PagesInc>
+</ProductXML>

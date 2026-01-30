@@ -1,0 +1,182 @@
+#include "Ward.rtsl"
+
+shader INVThreadTexture : material
+{
+    // uniform is not used, should be removed.
+	uniform bool   twosided	= false;
+	uniform float3 ambientLight= float3(0.0);
+	uniform float3 ambientColor= float3(0.0);
+    uniform float  refraction = 0.0;
+    uniform float3 reflection = float3(1.0);
+    uniform float  alphaRef = 0.0;
+
+	// parameters from effectinstance
+	// basic color information
+	uniform float3 diffuse    = float3(1.0);
+	uniform float  roughness  = 0.10482291553933218948761882445058;
+	uniform float3 emissive   = float3(0.0);
+	uniform float  opacity	= 0.0;
+
+    // Reflection and specular is really the same physical property, so ideally a material should only need one of these.
+	uniform float3 specular   = float3(1.0);
+
+    // Used to descide waht uv coords to use
+	uniform int    layer = 0;
+	
+	// thread texture
+	uniform texture2D	ThreadTexture;
+	// thread texture transformation
+	uniform float4x4	ThreadTransform;
+	
+	// texture coord for basic material 
+	varying float2		uv;
+	varying float2		uv1;
+	varying float2		uv2;
+	varying float2		uv3;
+	varying float2		uv4;
+	varying float2		uv5;
+	varying float2		uv6;
+	varying float2		uv7;
+
+	// clipping information
+	// full thread disables clipping
+	// thread with specific length enables clipping
+	uniform bool		ClippingEnable = false;
+
+	// clipping plane count could be 0 to 4.
+	// 0 (no clipping), 
+	// 1 (clipping from one end or full length thread with half section view on), 
+	// 2 (clipping from two ends or full length thread with 1/4 or 3/4 section view)
+	// 3 (clipping frome one end + 1/4 or 3/4 section view )
+	// or 3 (clipping from two ends + 1/2 section view)
+	// 4 (clipping from two ends + `1/4 or 3/4 section view)
+	uniform int			ClippingPlaneCount = 0;
+
+	// ask Yu Li
+	uniform float4		ClippingPlane0;
+	uniform float4      ClippingPlane1;
+	uniform float4      ClippingPlane2;
+	uniform float4      ClippingPlane3;
+	
+	// inventor basic material settings for bumpmap texture
+	uniform bool hasBumpMap = false;
+	uniform texture2D		bumpTexture;
+	uniform float			bumpAmount = float(0.2);
+	varying float3			bitangent;   
+	varying float3			tangent;    
+
+    // Does not seems to be set to the gpu shaders, overridden by a hard coded value as a test
+	uniform float2          InverseBumpMapSize = float2(1.0f/256.0f,1.0f/256.0f);
+
+    // Extra color and alpha parameters (used for transparency override).
+
+    // The extra color and alpha value.
+    uniform float4 u_extra_color_and_alpha = float4(0.0, 0.0, 0.0, 1.0);
+
+    // True if the extra color and alpha has been set.
+    uniform bool   u_extra_color_and_alpha_is_set = false;
+
+    // True if we only want to use the alpha component and are not interested in the color
+    uniform bool   u_extra_color_and_alpha_is_only_alpha = false;
+
+    // RapidRT built-in transparency hint.
+    uniform bool _transparentHint = false;
+	
+    // Compute normal from bumpmap texture
+	//float3 bumpmap(float2 uvTex,float3 Bitangent, float3 Tangent)
+	float3 bumpmap(float2 uvTex, float3 surfaceNormal)
+	{		
+        // Hard coded override, seems to match GPU shaders better than using the uniform.
+        float2 _InverseBumpMapSize = float2(1.0/256.0, 1.0/256.0);
+ 		float4 left = bumpTexture.lookup(uvTex - float2(_InverseBumpMapSize.x , 0.0));
+		float4 top = bumpTexture.lookup(uvTex - float2(0.0, _InverseBumpMapSize.y));
+		float4 right = bumpTexture.lookup(uvTex + float2(_InverseBumpMapSize.x , 0.0));
+		float4 bottom = bumpTexture.lookup(uvTex + float2(0.0, _InverseBumpMapSize.y));
+		float4 diffU = right - left;
+		float4 diffV = bottom - top;
+		float3 SampleNormal = cross(float3(1.0, 0.0, diffU.r*bumpAmount), float3(0.0, 1.0, diffV.r * bumpAmount));
+		
+		float3x3 tbn = float3x3(normalize(tangent), normalize(cross(surfaceNormal, tangent)), surfaceNormal);
+		//float3x3 tbn = float3x3(normalize(bitangent), normalize(tangent), surfaceNormal);
+		float3 Normal = normalize(SampleNormal);
+		Normal = Normal * tbn;
+		return Normal;
+	}
+
+    bool IsClipped(float3 SurfacePosition)
+    {
+      bool Clipped  = false;
+		
+		float4 pos = float4(SurfacePosition.x, SurfacePosition.y, SurfacePosition.z, 1.0);
+		if (ClippingEnable && ((dot(pos, ClippingPlane0) < 0.0f) || 
+			((ClippingPlaneCount > 1) && (dot(pos, ClippingPlane1) < 0.0)) ||
+			((ClippingPlaneCount > 2) && (dot(pos, ClippingPlane2) < 0.0)) ||
+			((ClippingPlaneCount > 3) && (dot(pos, ClippingPlane3) < 0.0))))
+		{
+			Clipped = true;
+		}
+        return Clipped;
+			
+    }
+
+    void cull()
+    {
+        rt_Cull = IsClipped(rt_SurfacePosition);
+    }
+
+	// sample function
+    void scattering()
+    {
+        float2 uvs[8] = { uv, uv1, uv2, uv3, uv4, uv5, uv6, uv7};
+		float2 texcoord= uvs[layer];
+				
+		float4 thread = float4(0.0);
+		float2 tex = frac(ThreadTransform * float4(texcoord.x, texcoord.y, 0.0, 1.0)).xy;
+		thread = ThreadTexture.lookup(tex).rgba;
+
+        // Bump
+		float3 normal = rt_ShadingNormal;
+		if(hasBumpMap)	{			  
+			normal = bumpmap(tex, normal); 
+		}
+        normal = faceforward(normal, rt_RayDirection, rt_GeometryNormal);
+
+        ///////////////////////////////////////////////////////////////////
+        // Diffuse
+        ///////////////////////////////////////////////////////////////////
+        float3 diffuseColor = thread.rgb*diffuse;
+        BSDF diffLobe = lambert(diffuseColor, normal);
+		
+        ///////////////////////////////////////////////////////////////////
+        // Specular
+        ///////////////////////////////////////////////////////////////////
+
+        // The Ward lobe is used to get the correct size specular highlights and color, but will also give rough reflections. The fact that
+        // you get reflections is different from 4.0 where the specular lobe was only used in transfer for direct lighting to get specular 
+        // highlights.
+        BSDF wardLobe = wardReflection(specular, normal, roughness);
+
+        // We use the diffuse and specular colors as weights to determine a mix factor between the the diffuse and specular lobes.
+        // However we also use an ad hoc method to weight down the specular lobe in preference of the diffuse lobe. Also note
+        // that in this calculation we use the "base" diffuse color and not the one possibly modulated by a texture. The reason
+        // is that for example if a texture modulates the diffuse color to black we will use only the specular lobe which also
+        // gives reflections. These are basically tweaks to try to reach a similar appearance as in the 4.0 implementation.
+        float diffuseSpecularMix = max(specular) / (max(diffuse) + max(specular));
+        diffuseSpecularMix = pow(diffuseSpecularMix, 3.0);
+
+        BSDF lambWardLobe = mix(diffuseSpecularMix, diffLobe, wardLobe);
+
+        ///////////////////////////////////////////////////////////////////
+        // Transparency
+        ///////////////////////////////////////////////////////////////////
+        BSDF transpLobe  = transparent(float3(1.0));
+        
+        ///////////////////////////////////////////////////////////////////
+        // Final Mix
+        ///////////////////////////////////////////////////////////////////
+
+        // If there is an extra color and alpha set we use the alpha value to modulate the opacity.
+        float opac = u_extra_color_and_alpha_is_set ? opacity * u_extra_color_and_alpha.a : opacity;
+        rt_Scattering = mix(opac, transpLobe, lambWardLobe);
+    }
+}

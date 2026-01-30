@@ -1,0 +1,115 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<WorkflowUI  XlfFile="AcadToShowcaseTransferUI.xlf">
+	<Settings>
+		<!--This one is only for testing purpose. Replace the XML with real settings definition when other elements are ready. -->
+		<PropertyEditor>
+			<ColumnWidths>
+                <ColumnWidth Width="180" />
+                <ColumnWidth Width="0" />
+                <ColumnWidth Width="50" />
+      </ColumnWidths>
+			<PageElement>
+				<GroupElement Id="Group_Geometry" Label="tr(Geometry)">
+				  <ComboBoxElement Id="Combox_TessellationSetting" Label="tr(Conversion settings:)" Current="Binding(TessellationSettings)" Tooltip="tr(Choose how accurately the geometry will be converted)">
+					<Item Text="tr(001-All-Purpose)" Value="001-All-Purpose" Image="" />
+					<Item Text="tr(002-Large-Parts)" Value="002-Large-Parts" Image="" />
+					<Item Text="tr(003-Small-Details)" Value="003-Small-Details" Image="" />
+					<Item Text="tr(004-1LOD-Low)" Value="004-1LOD-Low" Image="" />
+					<Item Text="tr(005-1LOD-Medium)" Value="005-1LOD-Medium" Image="" />
+					<Item Text="tr(006-1LOD-High)" Value="006-1LOD-High" Image="" />
+				  </ComboBoxElement>
+				</GroupElement>
+				<GroupElement Id="Group_VisualStyle" Label="tr(Visual Style)">
+				  <ComboBoxElement Id="Combox_VisualStyle" Label="tr(Visual Style:)" Current="Binding(VisualStyle)" Tooltip="tr(Choose the visual style that will be used to display the scene)">
+					<Item Text="tr(Realistic - No Shadows)" Value="RealisticNS" Image="" />
+					<Item Text="tr(Realistic - Ambient Shadows)" Value="RealisticAS" Image="" />
+					<Item Text="tr(Realistic - Shadows)" Value="RealisticShadows" Image="" />
+					<Item Text="tr(Realistic - Both Shadows and Ambient Shadows)" Value="RealisticSAS" Image="" />
+					<Item Text="tr(Realistic - Ray Tracing)" Value="RTAS" Image="" />
+					<Item Text="tr(Abstract - Flat Color)" Value="NPRFlatColor" Image="" />
+					<Item Text="tr(Abstract - Toon color)" Value="NPRToonColor" Image="" />
+					<Item Text="tr(Abstract - Shaded Textures)" Value="NPRShadedTextures" Image="" />
+					<Item Text="tr(Abstract - Tech)" Value="NPRTech" Image="" />
+					<Item Text="tr(Abstract - Realistic with Edges)" Value="NPRRealisticEdges" Image="" />
+				  </ComboBoxElement>
+				</GroupElement>
+				<GroupElement Id="Group_BackgroundEvironment" Label="tr(Background Environment)">
+				  <ComboBoxElement Id="Combox_Environment" Label="tr(Showcase environment:)" Current="Binding(Environment)" Tooltip="tr(Choose the Showcase environment that will be displayed and set the light conditions)">
+					<Item Text="tr(BP Black-White (Scale Independent - Abstract))" Value="BP Black-White/BP Black-White.a3e" Image="" />
+				  <Item Text="tr(BP Generic (Scale Independent - Abstract))" Value="BP Generic/BP Generic.a3e" Image="" />
+				  <Item Text="tr(BP Gradient (Scale Independent - Abstract))" Value="BP Gradient/BP Gradient.a3e" Image="" />
+				  <Item Text="tr(Empty (Scale Independent - Abstract))" Value="Empty/Empty.a3e" Image="" />
+				  <Item Text="tr(Grass Field (Building Size - Realistic))" Value="GrassField/GrassField.a3e" Image="" />
+					<Item Text="tr(White Room (Building Size - Abstract))" Value="WhiteRoom/WhiteRoom.a3e" Image="" />
+					<Item Text="tr(Black Room (Building Size - Abstract))" Value="BlackRoom/BlackRoom.a3e" Image="" />
+					<Item Text="tr(Country Road (Car Size – Realistic))" Value="CountryRoad/CountryRoad.a3e" Image="" />
+				  <Item Text="tr(Daylight Gypsum Crater (Car Size – Realistic))" Value="DayLightGypsumCrater/DayLightGypsumCrater.a3e" Image="" />
+				  <Item Text="tr(Desert Dawn Road (Car Size – Realistic))" Value="DesertDawnRoad/DesertDawnRoad.a3e" Image="" />
+				  <Item Text="tr(Docks (Car Size – Realistic))" Value="Docks/Docks.a3e" Image="" />
+				  <Item Text="tr(Dry Lake Bed(Car Size – Realistic))" Value="DryLakeBed/DryLakeBed.a3e" Image="" />
+				  <Item Text="tr(Exhibit Hall (Car Size – Realistic))" Value="ExhibitHall/ExhibitHall.a3e" Image="" />
+				  <Item Text="tr(Night Plaza (Car Size – Realistic))" Value="NightPlaza/NightPlaza.a3e" Image="" />
+				  <Item Text="tr(Night Street (Car Size – Realistic))" Value="NightStreet/NightStreet.a3e" Image="" />
+				  <Item Text="tr(Old Warehouse (Car Size – Realistic))" Value="OldWarehouse/OldWarehouse.a3e" Image="" />
+				  <Item Text="tr(Sepulveda (Car Size – Realistic))" Value="Sepulveda/Sepulveda.a3e" Image="" />
+				  <Item Text="tr(Stuttgart (Car Size – Realistic))" Value="Stuttgart/Stuttgart.a3e" Image="" />
+				  <Item Text="tr(Generic (Car Size – Abstract))" Value="Generic/Generic.a3e" Image="" />
+					<Item Text="tr(Green Room (Car Size – Abstract))" Value="GreenRoom/GreenRoom.a3e" Image="" />
+					<Item Text="tr(Photo Studio (Car Size – Abstract))" Value="PhotoStudio/PhotoStudio.a3e" Image="" />
+					<Item Text="tr(Empty Lab (Chair Size – Realistic))" Value="EmptyLab/EmptyLab.a3e" Image="" />
+					<Item Text="tr(ID Hardwood (Chair Size – Realistic))" Value="IDHardwood/IDHardwood.a3e" Image="" />
+					<Item Text="tr(ID Bloom (Chair Size – Abstract))" Value="IDBloom/IDBloom.a3e" Image="" />
+					<Item Text="tr(ID Box Sweep (Chair Size – Abstract))" Value="ID BoxSweep/ID BoxSweep.a3e" Image="" />
+					<Item Text="tr(ID Simple Skylight (Chair Size – Abstract))" Value="ID SimpleSkylight/ID SimpleSkylight.a3e" Image="" />
+					<Item Text="tr(ID Speed (Chair Size – Abstract))" Value="IDSpeed/IDSpeed.a3e" Image="" />
+					<Item Text="tr(ID Tech (Chair Size – Abstract))" Value="IDTech/IDTech.a3e" Image="" />
+				  </ComboBoxElement>
+				  <SliderElement Id="Slider_LargeEnvironmentModelRange" Label="tr(If Model is large than:)"
+						Number="Binding(LargeEnvironmentModelRange)"
+						Minimum="1.00"
+						Maximum="200.00"
+						Precision="2" Tooltip="tr(Choose the maximum dimension of the model beyond which Showcase will use the large-scale environment)"/>
+						<LabelElement Id="Label_Large" Text="tr(m)" Column="2"/>
+				  <ComboBoxElement Id="Combox_LargeScaleEvironment" Label="tr(Use Large-Scale environment:)" Current="Binding(LargeScaleEvironment)" Tooltip="tr(Choose the environment to use if model is larger than the limit)">
+				  <Item Text="tr(BP Black-White (Scale Independent - Abstract))" Value="BP Black-White/BP Black-White.a3e" Image="" />
+				  <Item Text="tr(BP Generic (Scale Independent - Abstract))" Value="BP Generic/BP Generic.a3e" Image="" />
+				  <Item Text="tr(BP Gradient (Scale Independent - Abstract))" Value="BP Gradient/BP Gradient.a3e" Image="" />
+				  <Item Text="tr(Empty (Scale Independent - Abstract))" Value="Empty/Empty.a3e" Image="" />
+				  <Item Text="tr(Grass Field (Building Size - Realistic))" Value="GrassField/GrassField.a3e" Image="" />
+					<Item Text="tr(White Room (Building Size - Abstract))" Value="WhiteRoom/WhiteRoom.a3e" Image="" />
+					<Item Text="tr(Black Room (Building Size - Abstract))" Value="BlackRoom/BlackRoom.a3e" Image="" />
+					<Item Text="tr(Country Road (Car Size – Realistic))" Value="CountryRoad/CountryRoad.a3e" Image="" />
+				  <Item Text="tr(Daylight Gypsum Crater (Car Size – Realistic))" Value="DayLightGypsumCrater/DayLightGypsumCrater.a3e" Image="" />
+				  <Item Text="tr(Desert Dawn Road (Car Size – Realistic))" Value="DesertDawnRoad/DesertDawnRoad.a3e" Image="" />
+				  <Item Text="tr(Docks (Car Size – Realistic))" Value="Docks/Docks.a3e" Image="" />
+				  <Item Text="tr(Dry Lake Bed(Car Size – Realistic))" Value="DryLakeBed/DryLakeBed.a3e" Image="" />
+				  <Item Text="tr(Exhibit Hall (Car Size – Realistic))" Value="ExhibitHall/ExhibitHall.a3e" Image="" />
+				  <Item Text="tr(Night Plaza (Car Size – Realistic))" Value="NightPlaza/NightPlaza.a3e" Image="" />
+				  <Item Text="tr(Night Street (Car Size – Realistic))" Value="NightStreet/NightStreet.a3e" Image="" />
+				  <Item Text="tr(Old Warehouse (Car Size – Realistic))" Value="OldWarehouse/OldWarehouse.a3e" Image="" />
+				  <Item Text="tr(Sepulveda (Car Size – Realistic))" Value="Sepulveda/Sepulveda.a3e" Image="" />
+				  <Item Text="tr(Stuttgart (Car Size – Realistic))" Value="Stuttgart/Stuttgart.a3e" Image="" />
+				  <Item Text="tr(Generic (Car Size – Abstract))" Value="Generic/Generic.a3e" Image="" />
+					<Item Text="tr(Green Room (Car Size – Abstract))" Value="GreenRoom/GreenRoom.a3e" Image="" />
+					<Item Text="tr(Photo Studio (Car Size – Abstract))" Value="PhotoStudio/PhotoStudio.a3e" Image="" />
+					<Item Text="tr(Empty Lab (Chair Size – Realistic))" Value="EmptyLab/EmptyLab.a3e" Image="" />
+					<Item Text="tr(ID Hardwood (Chair Size – Realistic))" Value="IDHardwood/IDHardwood.a3e" Image="" />
+					<Item Text="tr(ID Bloom (Chair Size – Abstract))" Value="IDBloom/IDBloom.a3e" Image="" />
+					<Item Text="tr(ID Box Sweep (Chair Size – Abstract))" Value="ID BoxSweep/ID BoxSweep.a3e" Image="" />
+					<Item Text="tr(ID Simple Skylight (Chair Size – Abstract))" Value="ID SimpleSkylight/ID SimpleSkylight.a3e" Image="" />
+					<Item Text="tr(ID Speed (Chair Size – Abstract))" Value="IDSpeed/IDSpeed.a3e" Image="" />
+					<Item Text="tr(ID Tech (Chair Size – Abstract))" Value="IDTech/IDTech.a3e" Image="" />
+				  </ComboBoxElement>
+				  <ComboBoxElement Id="Combox_GroundLevel" Label="tr(Environment ground plane level:)" Current="Binding(GroundLevel)" Tooltip="tr(Ground elevation where Showcase will position the environment floor)">
+				  <Item Text="tr(Ask user)" Value="GroundLeverAskUser" Image="" />
+					<Item Text="tr(At bottom of model)" Value="GroundLeverAtBottomOfModel" Image="" />
+				  </ComboBoxElement>
+				  <CheckBoxElement Id="CheckBox_CenterEnvironment" Label="tr(Center environment on model)" IsChecked="Binding(CenterEnvironment)" Tooltip="tr(The Showcase environment will be positioned so the model fits in the center of it)"/>
+				</GroupElement>
+				<GroupElement Id="Group_Navigation" Label="tr(Navigation)">				
+				<CheckBoxElement Id="CheckBox_CreateWalkZone" Label="tr(Create walk zone for interactive walkthrough)" IsChecked="Binding(CreateWalkZone)"  Tooltip="tr(Showcase will compute a walk zone where you can walk through at eye level)"/>
+				</GroupElement>
+			</PageElement>
+		</PropertyEditor>
+	</Settings>
+</WorkflowUI>
